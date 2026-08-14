@@ -5,7 +5,10 @@ import { fileURLToPath } from 'node:url';
 
 const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const patchPath = join(rootDir, '0002-rebrand-harrier.patch');
-const cinnyDir = join(rootDir, 'cinny');
+// Каталог подмодуля cinny: по умолчанию <rootDir>/cinny, переопределяется
+// через REBRAND_CINNY_DIR (абсолютный путь; используется в CI pages-deploy,
+// где скрипт запускается из клона harrier-desktop, а cinny — отдельный checkout)
+const cinnyDir = process.env.REBRAND_CINNY_DIR || join(rootDir, 'cinny');
 
 // Новые файлы — при revert удаляются
 const newAssets = [
