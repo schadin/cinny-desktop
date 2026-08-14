@@ -1,27 +1,36 @@
 diff --git i/index.html w/index.html
-index 2eefeee..61f486d 100644
+index 2eefeee..60a30d2 100644
 --- i/index.html
 +++ w/index.html
-@@ -4,8 +4,8 @@
+@@ -4,21 +4,21 @@
      <meta charset="UTF-8" />
      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 -    <title>Cinny</title>
 -    <meta name="name" content="Cinny" />
+-    <meta name="author" content="Ajay Bura" />
 +    <title>Harrier</title>
 +    <meta name="name" content="Harrier" />
-     <meta name="author" content="Ajay Bura" />
++    <meta name="author" content="schadin" />
      <meta
        name="description"
-@@ -16,7 +16,7 @@
-       content="cinny, cinnyapp, cinnychat, matrix, matrix client, matrix.org, element"
+       content="A Matrix client where you can enjoy the conversation using simple, elegant and secure interface protected by e2ee with the power of open source."
+     />
+     <meta
+       name="keywords"
+-      content="cinny, cinnyapp, cinnychat, matrix, matrix client, matrix.org, element"
++      content="harrier, matrix, matrix client, matrix.org"
      />
  
 -    <meta property="og:title" content="Cinny" />
+-    <meta property="og:url" content="https://cinny.in" />
+-    <meta property="og:image" content="https://cinny.in/assets/favicon-48x48.png" />
 +    <meta property="og:title" content="Harrier" />
-     <meta property="og:url" content="https://cinny.in" />
-     <meta property="og:image" content="https://cinny.in/assets/favicon-48x48.png" />
++    <meta property="og:url" content="https://github.com/schadin/harrier-desktop" />
++    <meta property="og:image" content="./public/res/favicon-48x48.png" />
      <meta
+       property="og:description"
+       content="A Matrix client where you can enjoy the conversation using simple, elegant and secure interface protected by e2ee with the power of open source."
 @@ -29,8 +29,8 @@
  
      <link rel="manifest" href="/manifest.json" />
@@ -33,6 +42,34 @@ index 2eefeee..61f486d 100644
      <meta name="apple-mobile-web-app-capable" content="yes" />
      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
  
+diff --git i/public/manifest.json w/public/manifest.json
+index acdcd00..7821eb8 100644
+--- i/public/manifest.json
++++ w/public/manifest.json
+@@ -1,7 +1,7 @@
+ {
+-  "name": "Cinny",
+-  "short_name": "Cinny",
+-  "description": "Yet another matrix client",
++  "name": "Harrier",
++  "short_name": "Harrier",
++  "description": "Matrix desktop client powered by Cinny",
+   "dir": "auto",
+   "lang": "en-US",
+   "display": "standalone",
+diff --git i/src/app/components/splash-screen/SplashScreen.tsx w/src/app/components/splash-screen/SplashScreen.tsx
+index 27adadb..5258a66 100644
+--- i/src/app/components/splash-screen/SplashScreen.tsx
++++ w/src/app/components/splash-screen/SplashScreen.tsx
+@@ -21,7 +21,7 @@ export function SplashScreen({ children }: SplashScreenProps) {
+         justifyContent="Center"
+       >
+         <Text size="H2" align="Center">
+-          Cinny
++          Harrier
+         </Text>
+       </Box>
+     </Box>
 diff --git i/src/app/features/settings/about/About.tsx w/src/app/features/settings/about/About.tsx
 index 7f6d90a..2bcbf7f 100644
 --- i/src/app/features/settings/about/About.tsx
@@ -131,6 +168,32 @@ index 7f6d90a..2bcbf7f 100644
                      <li>
                        <Text size="T300">
                          The{' '}
+diff --git i/src/app/features/settings/devices/LocalBackup.tsx w/src/app/features/settings/devices/LocalBackup.tsx
+index 00128c8..c1d3906 100644
+--- i/src/app/features/settings/devices/LocalBackup.tsx
++++ w/src/app/features/settings/devices/LocalBackup.tsx
+@@ -28,7 +28,7 @@ function ExportKeys() {
+         const blob = new Blob([encKeys], {
+           type: 'text/plain;charset=us-ascii',
+         });
+-        FileSaver.saveAs(blob, 'cinny-keys.txt');
++        FileSaver.saveAs(blob, 'harrier-keys.txt');
+       },
+       [mx]
+     )
+diff --git i/src/app/features/settings/notifications/SystemNotification.tsx w/src/app/features/settings/notifications/SystemNotification.tsx
+index ebd12d5..b11fdc2 100644
+--- i/src/app/features/settings/notifications/SystemNotification.tsx
++++ w/src/app/features/settings/notifications/SystemNotification.tsx
+@@ -28,7 +28,7 @@ function EmailNotification() {
+             device_display_name: email,
+             lang: 'en',
+             data: {
+-              brand: 'Cinny',
++              brand: 'Harrier',
+             },
+             append: true,
+           });
 diff --git i/src/app/pages/auth/AuthFooter.tsx w/src/app/pages/auth/AuthFooter.tsx
 index edfce89..bca7662 100644
 --- i/src/app/pages/auth/AuthFooter.tsx
@@ -160,6 +223,113 @@ index edfce89..bca7662 100644
        </Text>
        <Text as="a" size="T300" href="https://matrix.org" target="_blank" rel="noreferrer">
          Powered by Matrix
+diff --git i/src/app/pages/auth/AuthLayout.tsx w/src/app/pages/auth/AuthLayout.tsx
+index 3943f42..7e78560 100644
+--- i/src/app/pages/auth/AuthLayout.tsx
++++ w/src/app/pages/auth/AuthLayout.tsx
+@@ -20,7 +20,7 @@ import {
+ } from '../../hooks/useClientConfig';
+ import { AsyncStatus, useAsyncCallback } from '../../hooks/useAsyncCallback';
+ import { LOGIN_PATH, REGISTER_PATH, RESET_PASSWORD_PATH } from '../paths';
+-import CinnySVG from '../../../../public/res/svg/cinny.svg';
++import HarrierSVG from '../../../../public/res/svg/harrier.svg';
+ import { ServerPicker } from './ServerPicker';
+ import { AutoDiscoveryAction, autoDiscovery } from '../../cs-api';
+ import { SpecVersionsLoader } from '../../components/SpecVersionsLoader';
+@@ -134,8 +134,8 @@ export function AuthLayout() {
+         <Box direction="Column" className={css.AuthCard}>
+           <Header className={css.AuthHeader} size="600" variant="Surface">
+             <Box grow="Yes" direction="Row" gap="300" alignItems="Center">
+-              <img className={css.AuthLogo} src={CinnySVG} alt="Cinny Logo" />
+-              <Text size="H3">Cinny</Text>
++              <img className={css.AuthLogo} src={HarrierSVG} alt="Harrier Logo" />
++              <Text size="H3">Harrier</Text>
+             </Box>
+           </Header>
+           <Box className={css.AuthCardContent} direction="Column">
+diff --git i/src/app/pages/auth/login/PasswordLoginForm.tsx w/src/app/pages/auth/login/PasswordLoginForm.tsx
+index 62f46dd..8e62284 100644
+--- i/src/app/pages/auth/login/PasswordLoginForm.tsx
++++ w/src/app/pages/auth/login/PasswordLoginForm.tsx
+@@ -133,7 +133,7 @@ export function PasswordLoginForm({ defaultUsername, defaultEmail }: PasswordLog
+         user: username,
+       },
+       password,
+-      initial_device_display_name: 'Cinny Web',
++      initial_device_display_name: 'Harrier',
+     });
+   };
+ 
+@@ -151,7 +151,7 @@ export function PasswordLoginForm({ defaultUsername, defaultEmail }: PasswordLog
+         user: mxIdUsername,
+       },
+       password,
+-      initial_device_display_name: 'Cinny Web',
++      initial_device_display_name: 'Harrier',
+     });
+   };
+   const handleEmailLogin = (email: string, password: string) => {
+@@ -163,7 +163,7 @@ export function PasswordLoginForm({ defaultUsername, defaultEmail }: PasswordLog
+         address: email,
+       },
+       password,
+-      initial_device_display_name: 'Cinny Web',
++      initial_device_display_name: 'Harrier',
+     });
+   };
+ 
+diff --git i/src/app/pages/auth/login/TokenLogin.tsx w/src/app/pages/auth/login/TokenLogin.tsx
+index 761d5dc..86e20ea 100644
+--- i/src/app/pages/auth/login/TokenLogin.tsx
++++ w/src/app/pages/auth/login/TokenLogin.tsx
+@@ -57,7 +57,7 @@ export function TokenLogin({ token }: TokenLoginProps) {
+     startLogin(baseUrl, {
+       type: 'm.login.token',
+       token,
+-      initial_device_display_name: 'Cinny Web',
++      initial_device_display_name: 'Harrier',
+     });
+   }, [baseUrl, token, startLogin]);
+ 
+diff --git i/src/app/pages/auth/register/PasswordRegisterForm.tsx w/src/app/pages/auth/register/PasswordRegisterForm.tsx
+index 9f17342..cbc628f 100644
+--- i/src/app/pages/auth/register/PasswordRegisterForm.tsx
++++ w/src/app/pages/auth/register/PasswordRegisterForm.tsx
+@@ -109,7 +109,7 @@ function RegisterUIAFlow({
+         auth: authDict,
+         password,
+         username,
+-        initial_device_display_name: 'Cinny Web',
++        initial_device_display_name: 'Harrier',
+       });
+     },
+     [onRegister, formData]
+@@ -250,7 +250,7 @@ export function PasswordRegisterForm({
+       auth: {
+         session: authData.session,
+       },
+-      initial_device_display_name: 'Cinny Web',
++      initial_device_display_name: 'Harrier',
+     });
+   };
+ 
+diff --git i/src/app/pages/client/ClientNonUIFeatures.tsx w/src/app/pages/client/ClientNonUIFeatures.tsx
+index 5e7dadf..149b2ea 100644
+--- i/src/app/pages/client/ClientNonUIFeatures.tsx
++++ w/src/app/pages/client/ClientNonUIFeatures.tsx
+@@ -11,9 +11,9 @@ import {
+   RoomEventHandlerMap,
+ } from 'matrix-js-sdk';
+ import { roomToUnreadAtom, unreadEqual, unreadInfoToUnread } from '../../state/room/roomToUnread';
+-import LogoSVG from '../../../../public/res/svg/cinny.svg';
+-import LogoUnreadSVG from '../../../../public/res/svg/cinny-unread.svg';
+-import LogoHighlightSVG from '../../../../public/res/svg/cinny-highlight.svg';
++import LogoSVG from '../../../../public/res/svg/harrier.svg';
++import LogoUnreadSVG from '../../../../public/res/svg/harrier-unread.svg';
++import LogoHighlightSVG from '../../../../public/res/svg/harrier-highlight.svg';
+ import NotificationSound from '../../../../public/sound/notification.ogg';
+ import InviteSound from '../../../../public/sound/invite.ogg';
+ import { setFavicon } from '../../utils/dom';
 diff --git i/src/app/pages/client/WelcomePage.tsx w/src/app/pages/client/WelcomePage.tsx
 index 937cfd2..b54d005 100644
 --- i/src/app/pages/client/WelcomePage.tsx

@@ -133,6 +133,7 @@ fn set_linux_indicator_title(tray: &tauri::tray::TrayIcon<tauri::Wry>, title: &s
     }
 }
 
+#[cfg(target_os = "linux")]
 fn ayatana_has_activate_signal(air: *mut libappindicator::_AppIndicator) -> bool {
     use gtk::glib::gobject_ffi::g_signal_lookup;
     use gtk::glib::translate::{FromGlibPtrNone, IntoGlib};

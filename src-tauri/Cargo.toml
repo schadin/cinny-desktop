@@ -18,7 +18,6 @@ tauri-build = { version = "2.6.2", features = [] }
 serde_json = "1.0.109"
 serde = { version = "1.0.193", features = ["derive"] }
 tauri = { version = "2.11.2", features = [ "devtools", "tray-icon", "image-png"] }
-gtk = "0.18"
 tauri-plugin-localhost = "2.3.2"
 tauri-plugin-window-state = "2.4.1"
 tauri-plugin-clipboard-manager = "2.3.2"
@@ -43,6 +42,7 @@ custom-protocol = [ "tauri/custom-protocol" ]
 tauri-plugin-global-shortcut = "2.3.2"
 
 [target.'cfg(target_os = "linux")'.dependencies]
+gtk = "0.18"
 libappindicator = "0.9.0"
 
 [lib]
