@@ -53,6 +53,7 @@ pub fn run() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .manage(tray::DesktopState::default())
         .invoke_handler(tauri::generate_handler![
             tray::set_desktop_settings,
