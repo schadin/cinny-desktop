@@ -46,14 +46,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NODE_OPTIONS: "--max_old_space_size=4096"
       with:
-          args: ${{ matrix.args }} --config '{"bundle":{"createUpdaterArtifacts":false}}'
+          args: ${{ matrix.args }}
     - name: Upload macOS artifacts
       if: matrix.platform == 'macos-latest'
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: release-artifacts-macos
         path: |
-          src-tauri/target/universal-apple-darwin/release/bundle/macos/Cinny*.app
+          src-tauri/target/universal-apple-darwin/release/bundle/macos/Harrier*.app
         if-no-files-found: warn
 
     - name: Upload Linux artifacts
@@ -62,9 +62,9 @@ jobs:
       with:
         name: release-artifacts-linux
         path: |
-          src-tauri/target/release/bundle/deb/Cinny_*.deb
-          src-tauri/target/release/bundle/rpm/Cinny-*.rpm
-          src-tauri/target/release/bundle/appimage/Cinny_*.AppImage
+          src-tauri/target/release/bundle/deb/Harrier_*.deb
+          src-tauri/target/release/bundle/rpm/Harrier-*.rpm
+          src-tauri/target/release/bundle/appimage/Harrier_*.AppImage
         if-no-files-found: warn
 
     - name: Upload Windows artifacts
@@ -73,6 +73,6 @@ jobs:
       with:
         name: release-artifacts-windows
         path: |
-          src-tauri/target/release/bundle/msi/Cinny_*_x64_*.msi
-          src-tauri/target/release/bundle/nsis/Cinny_*_x64-setup.exe
+          src-tauri/target/release/bundle/msi/Harrier_*_x64_*.msi
+          src-tauri/target/release/bundle/nsis/Harrier_*_x64-setup.exe
         if-no-files-found: warn

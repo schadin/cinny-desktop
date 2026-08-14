@@ -55,7 +55,7 @@ fn build_menu(
     statuses: &[StatusPreset],
     active: &Option<StatusPreset>,
 ) -> tauri::Result<Menu<tauri::Wry>> {
-    let open = MenuItemBuilder::with_id("tray-open", "Open Cinny").build(app)?;
+    let open = MenuItemBuilder::with_id("tray-open", "Open Harrier").build(app)?;
     let sep1 = PredefinedMenuItem::separator(app)?;
 
     let mut status_items: Vec<CheckMenuItem<tauri::Wry>> = Vec::with_capacity(statuses.len());
@@ -210,15 +210,15 @@ fn update_tray(app: &AppHandle) -> tauri::Result<()> {
     })?;
 
     let tray = TrayIconBuilder::with_id(TRAY_ID)
-        .tooltip("Cinny")
-        .title("Cinny")
+        .tooltip("Harrier")
+        .title("Harrier")
         .icon(icon)
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(on_menu_event)
         .on_tray_icon_event(on_tray_icon_event)
         .build(app)?;
-    set_linux_indicator_title(&tray, "Cinny");
+    set_linux_indicator_title(&tray, "Harrier");
     set_linux_secondary_activate_target(app.clone(), &tray);
 
     Ok(())

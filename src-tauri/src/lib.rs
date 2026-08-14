@@ -4,6 +4,7 @@
 )]
 
 // mod menu;
+mod migrate;
 mod tray;
 
 use tauri::{webview::{NewWindowResponse, WebviewWindowBuilder}, WebviewUrl};
@@ -11,13 +12,9 @@ use tauri::{webview::{NewWindowResponse, WebviewWindowBuilder}, WebviewUrl};
 use tauri::TitleBarStyle;
 use tauri_plugin_opener::OpenerExt;
 
-#[cfg(feature = "updater")]
-use tauri_plugin_updater::UpdaterExt;
-#[cfg(feature = "updater")]
-use tauri_plugin_dialog::{DialogExt, MessageDialogButtons, MessageDialogKind};
-
 pub fn run() {
-    
+    migrate::migrate_settings();
+
     for key in ["NO_PROXY", "no_proxy"] {
         let current_val = std::env::var(key).unwrap_or_default();
         if !current_val.contains("localhost") {
@@ -32,20 +29,12 @@ pub fn run() {
 
     let port: u16 = 44548;
     let context = tauri::generate_context!();
-    #[cfg(feature = "updater")]
-    let mut builder = tauri::Builder::default();
-    #[cfg(not(feature = "updater"))]
     let builder = tauri::Builder::default();
 
     // #[cfg(target_os = "macos")]
     // {
     //     builder = builder.menu(menu::menu());
     // }
-
-    #[cfg(feature = "updater")]
-    {
-        builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
-    }
 
     builder
         .plugin(tauri_plugin_dialog::init())
@@ -62,40 +51,6 @@ pub fn run() {
             tray::set_tray_icon
         ])
         .setup(move |app| {
-            #[cfg(feature = "updater")]
-            {
-                let handle = app.handle().clone();
-                tauri::async_runtime::spawn(async move {
-                    let updater = match handle.updater() {
-                        Ok(u) => u,
-                        Err(e) => {
-                            eprintln!("Updater not available: {}", e);
-                            return;
-                        }
-                    };
-                    if let Ok(Some(update)) = updater.check().await {
-                        let version = update.version.clone();
-
-                        let should_update = handle
-                            .dialog()
-                            .message(format!(
-                                "Version {} is available.\n\nWould you like to update now?",
-                                version
-                            ))
-                            .title("Update Available")
-                            .kind(MessageDialogKind::Info)
-                            .buttons(MessageDialogButtons::YesNo)
-                            .blocking_show();
-
-                        if should_update {
-                            if update.download_and_install(|_, _| {}, || {}).await.is_ok() {
-                                handle.restart();
-                            }
-                        }
-                    }
-                });
-            }
-
             // Dev: use devUrl from tauri.conf.json (http://localhost:8080) to support HMR
             #[cfg(debug_assertions)]
             let window_url = WebviewUrl::App(Default::default());
@@ -110,7 +65,7 @@ pub fn run() {
             let app_handle = app.handle().clone();
             #[allow(unused_mut)]
             let mut window_builder = WebviewWindowBuilder::new(app, "main".to_string(), window_url)
-                .title("Cinny")
+                .title("Harrier")
                 .disable_drag_drop_handler()
                 .on_new_window(move |url, _features| {
                     let _ = app_handle.opener().open_url(url.as_str(), None::<&str>);
@@ -137,7 +92,7 @@ pub fn run() {
 
                 for widget in gtk::Window::list_toplevels() {
                     if let Ok(gtk_window) = widget.downcast::<gtk::Window>() {
-                        if gtk_window.title().map_or(false, |t| t == "Cinny") {
+                        if gtk_window.title().map_or(false, |t| t == "Harrier") {
                             gtk_window.set_titlebar(None::<&gtk::Widget>);
                             gtk_window.set_decorated(false);
                         }

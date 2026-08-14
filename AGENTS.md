@@ -2,11 +2,11 @@
 
 ## Обзор
 
-**Cinny Desktop** — это десктопный клиент для протокола Matrix (матрикс-чат), построенный на фреймворке **Tauri v2**. Представляет собой обёртку вокруг веб-приложения [Cinny](https://github.com/cinnyapp/cinny) (React/TypeScript), которая добавляет нативные возможности: системные уведомления, буфер обмена, глобальные горячие клавиши, автозапуск, автообновление и т.д.
+**Cinny Desktop** — это десктопный клиент для протокола Matrix (матрикс-чат), построенный на фреймворке **Tauri v2**. Представляет собой обёртку вокруг веб-приложения [Cinny](https://github.com/cinnyapp/cinny) (React/TypeScript), которая добавляет нативные возможности: системные уведомления, буфер обмена, глобальные горячие клавиши, автозапуск и т.д.
 
 - **Автор:** Ajay Bura (ajbura)
 - **Лицензия:** AGPL-3.0-only
-- **Репозиторий:** https://github.com/cinnyapp/cinny-desktop
+- **Репозиторий:** https://github.com/schadin/harrier-desktop
 - **Сайт:** https://cinny.in
 
 ---
@@ -24,7 +24,8 @@ cinny-desktop/
 ├── src-tauri/                  # Tauri v2 (Rust) — десктопная обёртка
 │   ├── src/
 │   │   ├── main.rs             # Точка входа
-│   │   ├── lib.rs              # Основная логика приложения (setup, updater, окно)
+│   │   ├── lib.rs              # Основная логика приложения (setup, окно)
+│   │   │                       # migrate.rs — миграция настроек cinny → harrier
 │   │   └── menu.rs             # Нативное меню macOS (закомментировано)
 │   ├── capabilities/           # Tauri v2 capability-based permissions
 │   │   ├── desktop.json        # Разрешения для глобальных шорткатов
@@ -35,25 +36,21 @@ cinny-desktop/
 │   ├── tauri.conf.json         # Конфигурация Tauri
 │   └── build.rs                # Сборочный скрипт Tauri
 ├── scripts/
-│   ├── release.mjs             # Создание release.json для автообновлений
+│   ├── rebrand.mjs             # Применение/откат ребрендинга (0002-rebrand-harrier.patch + логотип)
 │   └── update-version.mjs      # Обновление версии во всех файлах (npm, Cargo, tauri.conf)
 ├── .github/
 │   ├── workflows/
 │   │   ├── tauri.yml           # Сборка и публикация релизов (Windows, Linux, macOS)
-│   │   ├── tauri2.yml          # Релиз без встроенного апдейтера
 │   │   ├── test.yml            # Сборка PR (проверка, что собирается)
 │   │   ├── archive.yml         # ZIP-архив исходников в релизе
-│   │   ├── cla.yml             # CLA Assistant
 │   │   ├── lockfile.yml        # Проверка изменений package-lock.json
 │   │   └── pr-title.yml        # Проверка conventional commit в заголовках PR
-│   ├── ISSUE_TEMPLATE/
-│   │   └── config.yml          # Перенаправление на discussions
 │   ├── dependabot.yml          # Автообновление GitHub Actions (npm/cargo — закомментированы)
-│   ├── renovate.json           # Renovate для lock-файлов
-│   └── FUNDING.yml             # Ссылки на спонсорство
+│   └── renovate.json           # Renovate для lock-файлов
 ├── config.json                 # Общая конфигурация (homeserver, communities)
 ├── package.json                # Корневые npm-скрипты и зависимости (Tauri CLI)
-├── 0001-disable-tauri-updater.patch  # Патч для отключения встроенного апдейтера
+├── assets/                     # Исходники логотипа/иконки Harrier (harrier.svg, harrier.png)
+├── 0002-rebrand-harrier.patch  # Патч ребрендинга подмодуля cinny (применяется при сборке)
 ├── .node-version               # Node.js 24.13.1
 └── README.md                   # Основная документация
 ```
@@ -78,7 +75,6 @@ cinny-desktop/
 | tauri-plugin-opener | 2.5.4 | Открытие ссылок в браузере |
 | tauri-plugin-dialog | 2.7.1 | Системные диалоги |
 | tauri-plugin-global-shortcut | 2.3.2 | Глобальные горячие клавиши (desktop only) |
-| tauri-plugin-updater | 2.10.1 | Встроенное автообновление (опционально, feature `updater`) |
 
 ### Фронтенд (Web App — подмодуль cinny)
 | Компонент | Версия | Описание |
@@ -103,7 +99,6 @@ cinny-desktop/
 |---------|----------|
 | `npm run tauri dev` | Запуск в режиме разработки (HMR на http://localhost:8080) |
 | `npm run tauri build` | Продакшен-сборка |
-| `npm run release` | Создание `release.json` для апдейтера (CI) |
 | `npm run bump <version>` | Обновление версии во всех файлах |
 
 **Процесс сборки:**
@@ -128,17 +123,11 @@ cinny-desktop/
 - **Linux** (deb + AppImage) — `ubuntu-22.04`
 - **macOS** (DMG + app.tar.gz, universal binary) — `macos-latest`
 
-Финальный шаг `release-update` загружает `release.json` для встроенного апдейтера.
-
-### `tauri2.yml` — Релиз без апдейтера
-То же самое, но применяет патч `0001-disable-tauri-updater.patch` (отключает фичу `updater`).
-
 ### `test.yml` — Проверка PR
 Собирает приложение для всех трёх платформ на каждый PR (без создания релиза).
 
 ### Остальные workflows
 - `archive.yml` — добавляет ZIP-архив исходников в релиз
-- `cla.yml` — проверка подписания CLA
 - `lockfile.yml` — визуализация изменений в package-lock.json
 - `pr-title.yml` — проверка conventional commit
 
@@ -150,33 +139,36 @@ cinny-desktop/
 - **Dev** (`tauri dev`): фронтенд на Vite dev server (HMR), порт 8080
 - **Release** (`tauri build`): статика из `cinny/dist` раздаётся через `tauri-plugin-localhost` на порту 44548
 
-### 2. Автообновление (опционально)
-- Фича `updater` в Cargo.toml
-- В `lib.rs` при запуске проверяет наличие обновлений, показывает диалог
-- `release.json` формируется скриптом `scripts/release.mjs` по тегам релизов
-- Патч `0001-disable-tauri-updater.patch` отключает фичу для сборки без апдейтера
+### 2. Ребрендинг при сборке
+- Изменения фронтенда (About/Welcome, index.html) применяются патчем `0002-rebrand-harrier.patch` через `scripts/rebrand.mjs` (`rebrand:apply`/`rebrand:revert`) и откатываются после сборки — подмодуль `cinny` остаётся в upstream-состоянии
+- Логотип `assets/harrier.svg` копируется в `cinny/public/res/svg/` при apply
+- `beforeBuildCommand`: apply → build → revert; `beforeDevCommand`: apply (revert вручную после dev-сессии)
+- Автообновление удалено: плагин updater, ключи подписи и release.json не используются
 
-### 3. Прокси localhost
+### 3. Миграция настроек cinny → harrier
+`src-tauri/src/migrate.rs` при первом старте копирует (не перемещает) настройки `in.cinny.app` → `io.github.schadin.harrier` (config + data каталоги, XDG на Linux), создаёт маркер `migration.success`; ничего не удаляет и не перезаписывает существующие новые данные.
+
+### 4. Прокси localhost
 В `lib.rs` при старте гарантируется, что `localhost` и `127.0.0.1` есть в `NO_PROXY` — это критично для работы embedded-сервера в корпоративных сетях с прокси.
 
-### 4. Безопасность (CSP)
+### 5. Безопасность (CSP)
 Достаточно разрешительный CSP в `tauri.conf.json`:
 ```
 connect-src 'self' blob: ipc: ws: wss: http: https: http://ipc.localhost
 script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: ...
 ```
 
-### 5. Разрешения (Tauri v2 capabilities)
+### 6. Разрешения (Tauri v2 capabilities)
 - `desktop.json` — глобальные шорткаты
 - `migrated.json` — все остальные разрешения, мигрированные из Tauri v1 (FS, окна, диалоги, HTTP, уведомления, буфер обмена, opener и т.д.)
 
-### 6. Нативное меню macOS
+### 7. Нативное меню macOS
 В `menu.rs` описано меню для macOS (Cinny, Edit, View, Window). Закомментировано в `lib.rs` — вероятно из-за конфликтов с веб-рендерингом.
 
-### 7. Подмодуль cinny
+### 8. Подмодуль cinny
 Версия веб-клиента фиксируется через git submodule. При сборке всегда используется та версия, которая записана в `.gitmodules`. Скрипт `update-version.mjs` при бампе версии переключает подмодуль на последний тег.
 
-### 8. Версионирование
+### 9. Версионирование
 Версия приложения синхронизирована: `npm`, `Cargo.toml`, `tauri.conf.json` — все используют одинаковую версию (на момент написания 4.12.5).
 
 ---
@@ -190,7 +182,7 @@ script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: ...
 
 ### Локальный запуск
 ```bash
-git clone --recursive https://github.com/cinnyapp/cinny-desktop.git
+git clone --recursive https://github.com/schadin/harrier-desktop.git
 cd cinny-desktop/cinny
 npm ci
 cd ..
@@ -235,7 +227,7 @@ npm run tauri build   # продакшен-сборка
 
 ## Полезные ссылки
 
-- [Cinny Desktop releases](https://github.com/cinnyapp/cinny-desktop/releases)
+- [Cinny Desktop releases](https://github.com/schadin/harrier-desktop/releases)
 - [Cinny Web App](https://app.cinny.in/)
 - [Tauri v2 Documentation](https://v2.tauri.app/)
 - [Matrix protocol](https://matrix.org/)

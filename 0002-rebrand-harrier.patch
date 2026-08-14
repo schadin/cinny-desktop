@@ -1,0 +1,196 @@
+diff --git i/index.html w/index.html
+index 2eefeee..61f486d 100644
+--- i/index.html
++++ w/index.html
+@@ -4,8 +4,8 @@
+     <meta charset="UTF-8" />
+     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+-    <title>Cinny</title>
+-    <meta name="name" content="Cinny" />
++    <title>Harrier</title>
++    <meta name="name" content="Harrier" />
+     <meta name="author" content="Ajay Bura" />
+     <meta
+       name="description"
+@@ -16,7 +16,7 @@
+       content="cinny, cinnyapp, cinnychat, matrix, matrix client, matrix.org, element"
+     />
+ 
+-    <meta property="og:title" content="Cinny" />
++    <meta property="og:title" content="Harrier" />
+     <meta property="og:url" content="https://cinny.in" />
+     <meta property="og:image" content="https://cinny.in/assets/favicon-48x48.png" />
+     <meta
+@@ -29,8 +29,8 @@
+ 
+     <link rel="manifest" href="/manifest.json" />
+     <meta name="mobile-web-app-capable" content="yes" />
+-    <meta name="application-name" content="Cinny" />
+-    <meta name="apple-mobile-web-app-title" content="Cinny" />
++    <meta name="application-name" content="Harrier" />
++    <meta name="apple-mobile-web-app-title" content="Harrier" />
+     <meta name="apple-mobile-web-app-capable" content="yes" />
+     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+ 
+diff --git i/src/app/features/settings/about/About.tsx w/src/app/features/settings/about/About.tsx
+index 7f6d90a..2bcbf7f 100644
+--- i/src/app/features/settings/about/About.tsx
++++ w/src/app/features/settings/about/About.tsx
+@@ -4,7 +4,7 @@ import { Page, PageContent, PageHeader } from '../../../components/page';
+ import { SequenceCard } from '../../../components/sequence-card';
+ import { SequenceCardStyle } from '../styles.css';
+ import { SettingTile } from '../../../components/setting-tile';
+-import CinnySVG from '../../../../../public/res/svg/cinny.svg';
++import HarrierSVG from '../../../../../public/res/svg/harrier.svg';
+ import { clearCacheAndReload } from '../../../../client/initMatrix';
+ import { useMatrixClient } from '../../../hooks/useMatrixClient';
+ 
+@@ -38,23 +38,23 @@ export function About({ requestClose }: AboutProps) {
+                 <Box shrink="No">
+                   <img
+                     style={{ width: toRem(60), height: toRem(60) }}
+-                    src={CinnySVG}
+-                    alt="Cinny logo"
++                    src={HarrierSVG}
++                    alt="Harrier logo"
+                   />
+                 </Box>
+                 <Box direction="Column" gap="300">
+                   <Box direction="Column" gap="100">
+                     <Box gap="100" alignItems="End">
+-                      <Text size="H3">Cinny</Text>
++                      <Text size="H3">Harrier</Text>
+                       <Text size="T200">v{__CINNY_VERSION__}</Text>
+                     </Box>
+-                    <Text>Yet another matrix client.</Text>
++                    <Text>Powered by Cinny.</Text>
+                   </Box>
+ 
+                   <Box gap="200" wrap="Wrap">
+                     <Button
+                       as="a"
+-                      href="https://github.com/cinnyapp/cinny"
++                      href="https://github.com/schadin/harrier-desktop"
+                       rel="noreferrer noopener"
+                       target="_blank"
+                       variant="Secondary"
+@@ -65,19 +65,6 @@ export function About({ requestClose }: AboutProps) {
+                     >
+                       <Text size="B300">Source Code</Text>
+                     </Button>
+-                    <Button
+-                      as="a"
+-                      href="https://cinny.in/#sponsor"
+-                      rel="noreferrer noopener"
+-                      target="_blank"
+-                      variant="Critical"
+-                      fill="Soft"
+-                      size="300"
+-                      radii="300"
+-                      before={<Icon src={Icons.Heart} size="100" filled />}
+-                    >
+-                      <Text size="B300">Support</Text>
+-                    </Button>
+                   </Box>
+                 </Box>
+               </Box>
+@@ -124,6 +111,35 @@ export function About({ requestClose }: AboutProps) {
+                       paddingLeft: config.space.S400,
+                     }}
+                   >
++                    <li>
++                      <Text size="T300">
++                        Based on{' '}
++                        <a
++                          href="https://github.com/cinnyapp/cinny"
++                          rel="noreferrer noopener"
++                          target="_blank"
++                        >
++                          Cinny
++                        </a>{' '}
++                        ©{' '}
++                        <a
++                          href="https://github.com/ajbura"
++                          rel="noreferrer noopener"
++                          target="_blank"
++                        >
++                          Ajay Bura
++                        </a>{' '}
++                        used under the terms of{' '}
++                        <a
++                          href="https://github.com/cinnyapp/cinny/blob/dev/LICENSE"
++                          rel="noreferrer noopener"
++                          target="_blank"
++                        >
++                          AGPL-3.0
++                        </a>
++                        .
++                      </Text>
++                    </li>
+                     <li>
+                       <Text size="T300">
+                         The{' '}
+diff --git i/src/app/pages/client/WelcomePage.tsx w/src/app/pages/client/WelcomePage.tsx
+index 937cfd2..b54d005 100644
+--- i/src/app/pages/client/WelcomePage.tsx
++++ w/src/app/pages/client/WelcomePage.tsx
+@@ -1,7 +1,7 @@
+ import React from 'react';
+ import { Box, Button, Icon, Icons, Text, config, toRem } from 'folds';
+ import { Page, PageHero, PageHeroSection } from '../../components/page';
+-import CinnySVG from '../../../../public/res/svg/cinny.svg';
++import HarrierSVG from '../../../../public/res/svg/harrier.svg';
+ 
+ export function WelcomePage() {
+   return (
+@@ -14,18 +14,11 @@ export function WelcomePage() {
+       >
+         <PageHeroSection>
+           <PageHero
+-            icon={<img width="70" height="70" src={CinnySVG} alt="Cinny Logo" />}
+-            title="Welcome to Cinny"
++            icon={<img width="70" height="70" src={HarrierSVG} alt="Harrier Logo" />}
++            title="Welcome to Harrier"
+             subTitle={
+               <span>
+-                Yet another matrix client.{' '}
+-                <a
+-                  href="https://github.com/cinnyapp/cinny/releases"
+-                  target="_blank"
+-                  rel="noreferrer noopener"
+-                >
+-                  v{__CINNY_VERSION__}
+-                </a>
++                Powered by Cinny. v{__CINNY_VERSION__}
+               </span>
+             }
+           >
+@@ -33,7 +26,7 @@ export function WelcomePage() {
+               <Box grow="Yes" style={{ maxWidth: toRem(300) }} direction="Column" gap="300">
+                 <Button
+                   as="a"
+-                  href="https://github.com/cinnyapp/cinny"
++                  href="https://github.com/schadin/harrier-desktop"
+                   target="_blank"
+                   rel="noreferrer noopener"
+                   before={<Icon size="200" src={Icons.Code} />}
+@@ -42,18 +35,6 @@ export function WelcomePage() {
+                     Source Code
+                   </Text>
+                 </Button>
+-                <Button
+-                  as="a"
+-                  href="https://cinny.in/#sponsor"
+-                  target="_blank"
+-                  rel="noreferrer noopener"
+-                  fill="Soft"
+-                  before={<Icon size="200" src={Icons.Heart} />}
+-                >
+-                  <Text as="span" size="B400" truncate>
+-                    Support
+-                  </Text>
+-                </Button>
+               </Box>
+             </Box>
+           </PageHero>
