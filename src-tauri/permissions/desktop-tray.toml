@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "desktop-tray"
+description = "Allows managing the system tray icon, tray menu statuses and desktop window behavior."
+commands.allow = [
+  "set_desktop_settings",
+  "set_statuses",
+  "set_active_status",
+  "set_tray_icon"
+]

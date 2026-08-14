@@ -4,6 +4,7 @@
 )]
 
 // mod menu;
+mod tray;
 
 use tauri::{webview::{NewWindowResponse, WebviewWindowBuilder}, WebviewUrl};
 #[cfg(target_os = "macos")]
@@ -52,6 +53,13 @@ pub fn run() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_notification::init())
+        .manage(tray::DesktopState::default())
+        .invoke_handler(tauri::generate_handler![
+            tray::set_desktop_settings,
+            tray::set_statuses,
+            tray::set_active_status,
+            tray::set_tray_icon
+        ])
         .setup(move |app| {
             #[cfg(feature = "updater")]
             {
