@@ -5,7 +5,9 @@
 
 // mod menu;
 
-use tauri::{webview::{NewWindowResponse, WebviewWindowBuilder}, WebviewUrl, TitleBarStyle};
+use tauri::{webview::{NewWindowResponse, WebviewWindowBuilder}, WebviewUrl};
+#[cfg(target_os = "macos")]
+use tauri::TitleBarStyle;
 use tauri_plugin_opener::OpenerExt;
 
 #[cfg(feature = "updater")]
@@ -97,7 +99,8 @@ pub fn run() {
             };
 
             let app_handle = app.handle().clone();
-            let window_builder = WebviewWindowBuilder::new(app, "main".to_string(), window_url)
+            #[allow(unused_mut)]
+            let mut window_builder = WebviewWindowBuilder::new(app, "main".to_string(), window_url)
                 .title("Cinny")
                 .disable_drag_drop_handler()
                 .on_new_window(move |url, _features| {
@@ -107,8 +110,34 @@ pub fn run() {
 
             #[cfg(target_os = "macos")]
             let window_builder = window_builder.title_bar_style(TitleBarStyle::Transparent);
-            
-            window_builder.build()?;
+
+            #[cfg(target_os = "linux")]
+            let is_niri = std::env::var("NIRI_SOCKET").is_ok();
+
+            #[cfg(target_os = "linux")]
+            if is_niri {
+                window_builder = window_builder.decorations(false).shadow(false).visible(false);
+            }
+
+            #[allow(unused_variables)]
+            let window = window_builder.build()?;
+
+            #[cfg(target_os = "linux")]
+            if is_niri {
+                use gtk::prelude::*;
+
+                for widget in gtk::Window::list_toplevels() {
+                    if let Ok(gtk_window) = widget.downcast::<gtk::Window>() {
+                        if gtk_window.title().map_or(false, |t| t == "Cinny") {
+                            gtk_window.set_titlebar(None::<&gtk::Widget>);
+                            gtk_window.set_decorated(false);
+                        }
+                    }
+                }
+
+                window.show()?;
+            }
+
             Ok(())
         })
         .run(context)
