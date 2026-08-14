@@ -9,7 +9,8 @@
   "scripts": {
     "tauri": "shx cp config.json cinny/ && tauri",
     "release": "node scripts/release.mjs",
-    "bump": "node scripts/update-version.mjs"
+    "bump": "node scripts/update-version.mjs",
+    "install-bin": "test -f src-tauri/target/release/cinny || npm run tauri build -- --no-bundle && sudo install -m 755 src-tauri/target/release/cinny /usr/bin/cinny"
   },
   "keywords": [],
   "author": "Ajay Bura",
