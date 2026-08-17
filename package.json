@@ -7,7 +7,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "tauri": "shx cp config.json cinny/ && tauri",
+    "tauri": "shx cp config.json cinny/ && node scripts/tauri.mjs",
     "bump": "node scripts/update-version.mjs",
     "rebrand:apply": "node scripts/rebrand.mjs apply",
     "rebrand:revert": "node scripts/rebrand.mjs revert",

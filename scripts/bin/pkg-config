@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+shim_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+real_pkg=""
+IFS=: read -r -a entries <<< "${PATH:-}"
+for e in "${entries[@]}"; do
+  [ -n "$e" ] || continue
+  d="$(cd "$e" 2>/dev/null && pwd)" || d="$e"
+  [ "$d" = "$shim_dir" ] && continue
+  if [ -x "$e/pkg-config" ]; then
+    real_pkg="$e/pkg-config"
+    break
+  fi
+done
+[ -n "$real_pkg" ] || real_pkg="pkg-config"
+
+libs_only_l=0
+for a in "$@"; do
+  [ "$a" = "--libs-only-L" ] && libs_only_l=1
+done
+
+if [ "$libs_only_l" = "1" ]; then
+  out="$("$real_pkg" "$@" 2>/dev/null || true)"
+  trimmed="$(printf '%s' "$out" | tr -d '[:space:]')"
+  if [ -z "$trimmed" ]; then
+    pkg="${@: -1}"
+    libdir="$(printf '%s' "$("$real_pkg" --variable=libdir "$pkg" 2>/dev/null)" | tr -d '[:space:]')"
+    if [ -n "$libdir" ]; then
+      printf '%s\n' "-L${libdir}"
+      exit 0
+    fi
+  fi
+  printf '%s' "$out"
+  exit 0
+fi
+
+exec "$real_pkg" "$@"
