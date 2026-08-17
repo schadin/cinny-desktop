@@ -21,6 +21,7 @@ const newAssets = [
 // Существующие upstream-файлы — при apply перезаписываются, при revert восстанавливаются из git
 const overwriteAssets = [
   ['assets/favicon.ico', 'public/favicon.ico'],
+  ['assets/tray-base.png', 'public/icons/tray-base.png'],
 ];
 
 const appleSizes = [57, 60, 72, 76, 114, 120, 144, 152, 167, 180];
