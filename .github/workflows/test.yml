@@ -2,6 +2,7 @@ name: "Build pull request"
 on:
   pull_request:
     types: ['opened', 'synchronize']
+  workflow_dispatch:
 
 jobs:
   publish-tauri:
