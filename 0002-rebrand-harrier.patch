@@ -314,12 +314,12 @@ index 9f17342..cbc628f 100644
    };
  
 diff --git i/src/app/pages/client/ClientNonUIFeatures.tsx w/src/app/pages/client/ClientNonUIFeatures.tsx
-index 5e7dadf..149b2ea 100644
+index 631bf10..1203710 100644
 --- i/src/app/pages/client/ClientNonUIFeatures.tsx
 +++ w/src/app/pages/client/ClientNonUIFeatures.tsx
-@@ -11,9 +11,9 @@ import {
-   RoomEventHandlerMap,
+@@ -12,9 +12,9 @@ import {
  } from 'matrix-js-sdk';
+ 
  import { roomToUnreadAtom, unreadEqual, unreadInfoToUnread } from '../../state/room/roomToUnread';
 -import LogoSVG from '../../../../public/res/svg/cinny.svg';
 -import LogoUnreadSVG from '../../../../public/res/svg/cinny-unread.svg';
